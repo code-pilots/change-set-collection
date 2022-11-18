@@ -140,14 +140,28 @@ final class ChangeSetCollectionTest extends TestCase
     /**
      * @dataProvider numericProvider
      */
-    public function testInvalidId(): void
+    public function testInvalidIdNull(): void
     {
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('ID could not be an object or null');
+        $this->expectExceptionMessage('Expected "id" of type "scalar", "null" given');
         new ChangeSetCollection(
             [1],
             [1],
             fn (int $value) => null,
+        );
+    }
+
+    /**
+     * @dataProvider numericProvider
+     */
+    public function testInvalidIdStdClass(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Expected "id" of type "scalar", "stdClass" given');
+        new ChangeSetCollection(
+            [1],
+            [1],
+            fn (int $value) => (object)['prop' => 'test'],
         );
     }
 

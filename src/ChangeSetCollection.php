@@ -11,6 +11,11 @@ use RuntimeException;
 use function array_filter;
 use function count;
 
+/**
+ * @template TCurrent
+ * @template TNew
+ * @template TID of scalar|null
+ */
 final class ChangeSetCollection implements Countable, IteratorAggregate
 {
     /**
@@ -18,6 +23,12 @@ final class ChangeSetCollection implements Countable, IteratorAggregate
      */
     private array $elements = [];
 
+    /**
+     * @param iterable<TCurrent> $currentCollection
+     * @param iterable<TNew> $newCollection
+     * @param callable(TCurrent|TNew):TID $getId
+     * @param callable(TCurrent):bool|null $ignore
+     */
     public function __construct(
         iterable $currentCollection,
         iterable $newCollection,
@@ -30,11 +41,9 @@ final class ChangeSetCollection implements Countable, IteratorAggregate
                 continue;
             }
             $id = $getId($item);
-            if (is_object($id) || null === $id) {
-                throw new RuntimeException('ID could not be an object or null');
-            }
+            $id = $this->castIdKey($id);
             if (array_key_exists($id, $removeElements)) {
-                throw new RuntimeException(sprintf('id "%s" must be unique', (string)$id));
+                throw new RuntimeException(sprintf('id "%s" must be unique', $id));
             }
             $removeElements[$id] = new ChangeSetElement(
                 element: $item,
@@ -44,11 +53,9 @@ final class ChangeSetCollection implements Countable, IteratorAggregate
         }
 
         foreach ($newCollection as $item) {
-            $id = $getId($item);
-            if (is_object($id)) {
-                throw new RuntimeException('ID could not be an object');
-            }
-            if (null !== $id && isset($removeElements[$id])) {
+            $id = $getId($item) ?? $this->createNewId();
+            $id = $this->castIdKey($id);
+            if (isset($removeElements[$id])) {
                 $mergeElement = $removeElements[$id];
                 $this->elements[$id] = new ChangeSetElement(
                     element: $mergeElement->element,
@@ -57,7 +64,7 @@ final class ChangeSetCollection implements Countable, IteratorAggregate
                 );
                 unset($removeElements[$id]);
             } else {
-                $this->elements[$id ?? $this->createNewId()] = new ChangeSetElement(
+                $this->elements[$id] = new ChangeSetElement(
                     element: null,
                     updateData: $item,
                     changeState: ChangeState::add
@@ -66,6 +73,15 @@ final class ChangeSetCollection implements Countable, IteratorAggregate
         }
 
         $this->elements = array_merge($this->elements, $removeElements);
+    }
+
+    private function castIdKey(mixed $id): string
+    {
+        if (!is_scalar($id)) {
+            throw new RuntimeException(sprintf('Expected "id" of type "scalar", "%s" given', get_debug_type($id)));
+        }
+
+        return (string)$id;
     }
 
     private function createNewId(): string
@@ -79,13 +95,16 @@ final class ChangeSetCollection implements Countable, IteratorAggregate
     }
 
     /**
-     * @return ArrayIterator<ChangeSetElement>
+     * @return ArrayIterator<array-key, ChangeSetElement>
      */
     public function getIterator(): ArrayIterator
     {
         return new ArrayIterator($this->elements);
     }
 
+    /**
+     * @param array-key $id
+     */
     public function get(mixed $id): ChangeSetElement
     {
         return $this->elements[$id];

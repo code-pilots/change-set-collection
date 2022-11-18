@@ -45,3 +45,10 @@ Output:
 -7
 --------
 ```
+
+### Run tests
+Exec: `./vendor/bin/phpunit`
+
+### Run lint
+Exec phpstan: `./vendor/bin/phpstan analyse src tests`
+Exec psalm: `./vendor/bin/psalm`
