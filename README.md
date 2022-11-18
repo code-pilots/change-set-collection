@@ -1,7 +1,18 @@
 # ChangeSetCollection Util
+
 The utility is designed to detect the state of change set relative to two iterables list
 
-Example:
+## Installation
+
+Install the latest version with
+
+```bash
+$ composer require code-pilots/change-set-collection
+```
+
+## Basic Usage
+
+### Example:
 ```php
 $changeSet = new ChangeSetCollection(
     [
@@ -45,6 +56,8 @@ Output:
 -User 7
 --------
 ```
+
+## For contributors
 
 ### Run tests
 Exec: `./vendor/bin/phpunit`
