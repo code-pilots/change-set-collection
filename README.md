@@ -10,8 +10,8 @@ $changeSet = new ChangeSetCollection(
         new User(id: 7, name: 'User 7'),
     ],
     [
-        new User(id: 1, name: 'User 1'),
-        new User(id: 10, name: 'User 10'),
+        new User(id: 1, name: 'EditedUser 1'),
+        new User(id: 10, name: 'NewUser 10'),
     ],
     fn (User $user) => $user->getId(),
 );
@@ -19,14 +19,14 @@ $changeSet = new ChangeSetCollection(
 echo $line = '--------' . PHP_EOL;
 foreach ($changeSet as $change) {
     if ($change->isAdd()) {
-        echo '+' . $change->updateData->getId() . PHP_EOL;
+        echo '+' . $change->updateData->getName() . PHP_EOL;
         echo $line;
     } elseif ($change->isEdit()) {
-        echo '-' . $change->element->getId() . PHP_EOL;
-        echo '+' . $change->updateData->getId() . PHP_EOL;
+        echo '-' . $change->element->getName() . PHP_EOL;
+        echo '+' . $change->updateData->getName() . PHP_EOL;
         echo $line;
     } elseif ($change->isRemove()) {
-        echo '-' . $change->element->getId() . PHP_EOL;
+        echo '-' . $change->element->getName() . PHP_EOL;
         echo $line;
     }
 }
@@ -35,14 +35,14 @@ foreach ($changeSet as $change) {
 Output:
 ```
 --------
--1
-+1
+-User 1
++EditedUser 1
 --------
-+10
++NewUser 10
 --------
--5
+-User 5
 --------
--7
+-User 7
 --------
 ```
 
