@@ -6,7 +6,6 @@ namespace CodePilots\ChangeSetCollection;
 
 use ArrayIterator;
 use Countable;
-use IteratorAggregate;
 use RuntimeException;
 use function array_filter;
 use function count;
@@ -16,10 +15,10 @@ use function count;
  * @template TNew
  * @template TID of scalar|null
  */
-final class ChangeSetCollection implements Countable, IteratorAggregate
+final class ChangeSetCollection implements Countable, ChangeSetElementHashmap
 {
     /**
-     * @var array<array-key, ChangeSetElement>
+     * @var array<string, ChangeSetElement>
      */
     private array $elements = [];
 
@@ -94,8 +93,9 @@ final class ChangeSetCollection implements Countable, IteratorAggregate
         return count($this->elements);
     }
 
+
     /**
-     * @return ArrayIterator<array-key, ChangeSetElement>
+     * @return ArrayIterator<string, ChangeSetElement>
      */
     public function getIterator(): ArrayIterator
     {
@@ -103,7 +103,7 @@ final class ChangeSetCollection implements Countable, IteratorAggregate
     }
 
     /**
-     * @param array-key $id
+     * @param string $id
      */
     public function get(mixed $id): ChangeSetElement
     {
