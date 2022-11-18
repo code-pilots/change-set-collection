@@ -157,6 +157,7 @@ final class ChangeSetCollectionTest extends TestCase
             [[1], [1], [0, 1, 0]], // one edit
             [[], [1], [1, 0, 0]], // one add
             [[1], [], [0, 0, 1]], // one remove
+            [[1, 5, 7], [1, 10], [1, 1, 2]], // one remove
         ];
     }
 }
