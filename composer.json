@@ -1,0 +1,31 @@
+{
+    "name": "code-pilots/change-set-collection",
+    "description": "The utility is designed to detect the state of change set relative to two iterables list",
+    "license": "MIT",
+    "keywords": [
+        "php",
+        "change-set",
+        "collection"
+    ],
+    "homepage": "https://github.com/code-pilots/change-set-collection",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Roman Yastrebov",
+            "email": "tirastwo@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "CodePilots\\ChangeSetCollection\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=8.1"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^1.9",
+        "phpunit/phpunit": "^9.5",
+        "symfony/var-dumper": "^4.0|^5.4"
+    }
+}
