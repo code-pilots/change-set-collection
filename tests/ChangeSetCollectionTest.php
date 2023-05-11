@@ -92,8 +92,8 @@ final class ChangeSetCollectionTest extends TestCase
         self::assertEquals(1, $changeSet->count());
         foreach ($changeSet as $change) {
             self::assertTrue($change->isAdd());
-            self::assertEquals(null, $change->element);
-            self::assertEquals(7, $change->updateData);
+            self::assertEquals(null, $change->element1);
+            self::assertEquals(7, $change->element2);
         }
 
         $changeSet = new ChangeSetCollection(
@@ -105,8 +105,8 @@ final class ChangeSetCollectionTest extends TestCase
         self::assertEquals(1, $changeSet->count());
         foreach ($changeSet as $change) {
             self::assertTrue($change->isEdit());
-            self::assertEquals(7, $change->element);
-            self::assertEquals(7, $change->updateData);
+            self::assertEquals(7, $change->element1);
+            self::assertEquals(7, $change->element2);
         }
 
         $changeSet = new ChangeSetCollection(
@@ -118,8 +118,8 @@ final class ChangeSetCollectionTest extends TestCase
         self::assertEquals(1, $changeSet->count());
         foreach ($changeSet as $change) {
             self::assertTrue($change->isRemove());
-            self::assertEquals(7, $change->element);
-            self::assertEquals(null, $change->updateData);
+            self::assertEquals(7, $change->element1);
+            self::assertEquals(null, $change->element2);
         }
     }
 

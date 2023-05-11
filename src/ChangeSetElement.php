@@ -7,8 +7,8 @@ namespace CodePilots\ChangeSetCollection;
 final class ChangeSetElement
 {
     public function __construct(
-        public readonly mixed $element,
-        public readonly mixed $updateData,
+        public readonly mixed $element1,
+        public readonly mixed $element2,
         public readonly ChangeState $changeState,
     ) {
     }

@@ -11,8 +11,8 @@ use function array_filter;
 use function count;
 
 /**
- * @template TCurrent
- * @template TNew
+ * @template T1
+ * @template T2
  * @template TID of scalar|null
  */
 final class ChangeSetCollection implements Countable, ChangeSetElementHashmap
@@ -23,49 +23,49 @@ final class ChangeSetCollection implements Countable, ChangeSetElementHashmap
     private array $elements = [];
 
     /**
-     * @param iterable<TCurrent> $currentCollection
-     * @param iterable<TNew> $newCollection
-     * @param callable(TCurrent|TNew):TID $getId
-     * @param callable(TCurrent):bool|null $ignore
+     * @param iterable<T1>           $collection1
+     * @param iterable<T2>           $collection2
+     * @param callable(T1|T2):TID    $getId
+     * @param callable(T1):bool|null $ignore
      */
     public function __construct(
-        iterable $currentCollection,
-        iterable $newCollection,
+        iterable $collection1,
+        iterable $collection2,
         callable $getId,
         callable $ignore = null
     ) {
         $removeElements = [];
-        foreach ($currentCollection as $item) {
-            if (null !== $ignore && $ignore($item)) {
+        foreach ($collection1 as $element1) {
+            if (null !== $ignore && $ignore($element1)) {
                 continue;
             }
-            $id = $getId($item);
+            $id = $getId($element1);
             $id = $this->castIdKey($id);
             if (array_key_exists($id, $removeElements)) {
                 throw new RuntimeException(sprintf('id "%s" must be unique', $id));
             }
             $removeElements[$id] = new ChangeSetElement(
-                element: $item,
-                updateData: null,
+                element1: $element1,
+                element2: null,
                 changeState: ChangeState::remove
             );
         }
 
-        foreach ($newCollection as $item) {
-            $id = $getId($item) ?? $this->createNewId();
+        foreach ($collection2 as $element2) {
+            $id = $getId($element2) ?? $this->createNewId();
             $id = $this->castIdKey($id);
             if (isset($removeElements[$id])) {
                 $mergeElement = $removeElements[$id];
                 $this->elements[$id] = new ChangeSetElement(
-                    element: $mergeElement->element,
-                    updateData: $item,
+                    element1: $mergeElement->element1,
+                    element2: $element2,
                     changeState: ChangeState::edit
                 );
                 unset($removeElements[$id]);
             } else {
                 $this->elements[$id] = new ChangeSetElement(
-                    element: null,
-                    updateData: $item,
+                    element1: null,
+                    element2: $element2,
                     changeState: ChangeState::add
                 );
             }
