@@ -83,7 +83,7 @@ $_writeOutputBlock = static function(string ...$lines) {
 
 echo $_separator;
 foreach ($changeSet as $change) {
-    match ($change->changeState) {
+    match ($change->state) {
         ChangeState::add => $_writeOutputBlock(
             '+' . $change->element2['customer'],
         ),

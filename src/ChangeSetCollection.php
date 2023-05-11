@@ -47,7 +47,7 @@ final class ChangeSetCollection implements Countable, ChangeSetElementHashmap
             $removeElements[$id] = new ChangeSetElement(
                 element1: $element1,
                 element2: null,
-                changeState: ChangeState::remove
+                state: ChangeState::remove
             );
         }
 
@@ -59,14 +59,14 @@ final class ChangeSetCollection implements Countable, ChangeSetElementHashmap
                 $this->elements[$id] = new ChangeSetElement(
                     element1: $mergeElement->element1,
                     element2: $element2,
-                    changeState: ChangeState::edit
+                    state: ChangeState::edit
                 );
                 unset($removeElements[$id]);
             } else {
                 $this->elements[$id] = new ChangeSetElement(
                     element1: null,
                     element2: $element2,
-                    changeState: ChangeState::add
+                    state: ChangeState::add
                 );
             }
         }
