@@ -110,17 +110,17 @@ final class ChangeSetCollection implements Countable, ChangeSetElementHashmap
         return $this->elements[$id];
     }
 
-    public function countAdd(): int
+    public function countAdded(): int
     {
         return count(array_filter($this->elements, static fn (ChangeSetElement $element) => $element->isAdd()));
     }
 
-    public function countEdit(): int
+    public function countEdited(): int
     {
         return count(array_filter($this->elements, static fn (ChangeSetElement $element) => $element->isEdit()));
     }
 
-    public function countRemove(): int
+    public function countRemoved(): int
     {
         return count(array_filter($this->elements, static fn (ChangeSetElement $element) => $element->isRemove()));
     }

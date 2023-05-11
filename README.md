@@ -15,16 +15,16 @@ $ composer require code-pilots/change-set-collection
 ### Example 1:
 ```php
 $changeSet = new ChangeSetCollection(
-    [
+    collection1: [
         new User(id: 1, name: 'User 1'),
         new User(id: 5, name: 'User 5'),
         new User(id: 7, name: 'User 7'),
     ],
-    [
+    collection2: [
         new User(id: 1, name: 'EditedUser 1'),
         new User(id: 10, name: 'NewUser 10'),
     ],
-    fn (User $user) => $user->getId(),
+    getId: fn (User $user) => $user->getId(),
 );
 
 echo $line = '--------' . PHP_EOL;
@@ -59,32 +59,50 @@ Output:
 
 ### Example 2:
 ```php
+// Create and compare change set
 $changeSet = new ChangeSetCollection(
-    [
+    collection1: [
         new Order(id: Uuid::from('00000000-0000-0000-0000-000000000001'), customer: 'Jon'),
         new Order(id: Uuid::from('00000000-0000-0000-0000-000000000002'), customer: 'Doe'),
     ],
-    [
+    collection2: [
         ['uuid' => '00000000-0000-0000-0000-000000000001', 'customer' => 'Dan'],
-        ['uuid' => '00000000-0000-0000-0000-000000000003', 'customer' => 'Wendy'],
+        ['uuid' => null, 'customer' => 'Wendy'],
     ],
-    fn (User|array $order) => $order instanceof Order ? $order->getId() : $order['uuid'],
+    getId: fn (User|array $order) => $order instanceof Order ? $order->getId() : $order['uuid'],
 );
 
-echo $line = '--------' . PHP_EOL;
+// Example helper function
+$_separator = '--------' . PHP_EOL;
+$_writeOutputBlock = static function(string ...$lines) {
+    foreach ($lines as $line) {
+        echo $line . PHP_EOL;
+    }
+    echo $_separator;
+}
+
+echo $_separator;
 foreach ($changeSet as $change) {
-    if ($change->isAdd()) {
-        echo '+' . $change->element2['customer'] . PHP_EOL;
-        echo $line;
-    } elseif ($change->isEdit()) {
-        echo '-' . $change->element1->getCustomer() . PHP_EOL;
-        echo '+' . $change->element2['customer'] . PHP_EOL;
-        echo $line;
-    } elseif ($change->isRemove()) {
-        echo '-' . $change->element1->getCustomer() . PHP_EOL;
-        echo $line;
+    match ($change->changeState) {
+        ChangeState::add => $_writeOutputBlock(
+            '+' . $change->element2['customer'],
+        ),
+        ChangeState::edit => $_writeOutputBlock(
+            '-' . $change->element1->getCustomer(),
+            '+' . $change->element2['customer'],
+        ),
+        ChangeState::remove => $_writeOutputBlock(
+            '-' . $change->element1->getCustomer(),
+        ),
     }
 }
+
+echo PHP_EOL . sprintf(
+    '[Added: %d], [Edited: %d], [Removed: %d]',
+    $changeSet->countAdded(),
+    $changeSet->countEdited(),
+    $changeSet->countRemoved(),
+);
 ```
 
 Output:
@@ -97,6 +115,8 @@ Output:
 --------
 +Wendy
 --------
+
+[Added: 1], [Edited: 1], [Removed: 1]
 ```
 
 ## For contributors

@@ -25,9 +25,9 @@ final class ChangeSetCollectionTest extends TestCase
             fn (int $value): int => $value
         );
 
-        self::assertEquals($counts[0], $changeSet->countAdd());
-        self::assertEquals($counts[1], $changeSet->countEdit());
-        self::assertEquals($counts[2], $changeSet->countRemove());
+        self::assertEquals($counts[0], $changeSet->countAdded());
+        self::assertEquals($counts[1], $changeSet->countEdited());
+        self::assertEquals($counts[2], $changeSet->countRemoved());
     }
 
     /**
@@ -56,9 +56,9 @@ final class ChangeSetCollectionTest extends TestCase
             fn (object $object): int => $object->id
         );
 
-        self::assertEquals($counts[0], $changeSet->countAdd());
-        self::assertEquals($counts[1], $changeSet->countEdit());
-        self::assertEquals($counts[2], $changeSet->countRemove());
+        self::assertEquals($counts[0], $changeSet->countAdded());
+        self::assertEquals($counts[1], $changeSet->countEdited());
+        self::assertEquals($counts[2], $changeSet->countRemoved());
     }
 
     /**
@@ -73,9 +73,9 @@ final class ChangeSetCollectionTest extends TestCase
             fn (int $value): bool => 1 === $value,
         );
 
-        self::assertEquals(1, $changeSet->countAdd());
-        self::assertEquals(1, $changeSet->countEdit());
-        self::assertEquals(0, $changeSet->countRemove());
+        self::assertEquals(1, $changeSet->countAdded());
+        self::assertEquals(1, $changeSet->countEdited());
+        self::assertEquals(0, $changeSet->countRemoved());
     }
 
     /**
